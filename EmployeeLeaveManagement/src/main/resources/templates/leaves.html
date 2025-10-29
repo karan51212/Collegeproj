@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Leaves</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Manage Leaves</h1>
+        <div class="d-flex justify-content-between mb-3">
+            <a th:href="@{/leaves/new}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Leave</a>
+            <form th:action="@{/leaves}" method="get" class="d-flex">
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by employee or status" class="form-control me-2">
+                <button type="submit" class="btn btn-outline-success">Search</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover leaves-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="leave : ${leaves}" class="table-row">
+                        <td th:text="${leave.employee.name}"></td>
+                        <td th:text="${#temporals.format(leave.startDate, 'dd-MMM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(leave.endDate, 'dd-MMM-yyyy')}"></td>
+                        <td th:text="${leave.reason}"></td>
+                        <td>
+                            <span class="badge" th:classappend="${leave.status == 'PENDING' ? 'bg-warning' : leave.status == 'APPROVED' ? 'bg-success' : 'bg-danger'}" th:text="${leave.status}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/leaves/edit/{id}(id=${leave.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                            <a th:href="@{/leaves/delete/{id}(id=${leave.id})}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a th:href="@{/index}" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+</body>
+</html>
